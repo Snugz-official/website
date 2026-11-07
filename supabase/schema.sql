@@ -23,6 +23,12 @@ create table if not exists public.fit_profiles (
 
 alter table public.fit_profiles enable row level security;
 
+-- table permissions: newer Supabase projects don't grant these automatically.
+-- Logged-in users may read/write (RLS below still limits them to their own row);
+-- anonymous visitors get nothing. TRUNCATE is removed because it skips RLS.
+revoke all on public.fit_profiles from anon, authenticated;
+grant select, insert, update, delete on public.fit_profiles to authenticated;
+
 drop policy if exists "read own profile"   on public.fit_profiles;
 drop policy if exists "insert own profile" on public.fit_profiles;
 drop policy if exists "update own profile" on public.fit_profiles;
