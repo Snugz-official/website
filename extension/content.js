@@ -91,10 +91,23 @@
   function highlightSize(size) {
     document.querySelectorAll(".snugz-hit").forEach((e) => e.classList.remove("snugz-hit"));
     const want = size.trim().toUpperCase();
-    const els = document.querySelectorAll("[class*='size'] button, [class*='size'] li, [class*='Size'] button, [class*='size-buttons'] *, a[class*='size'], div[class*='size'] > div");
-    for (const el of els) {
-      if (el.closest("#snugz-card, table")) continue;
-      if (cellText(el).toUpperCase() === want && el.children.length <= 2) { el.classList.add("snugz-hit"); break; }
+    // Sites scramble class names (Flipkart), so look for small visible elements whose text is exactly the size,
+    // preferring ones near a "Select Size" label. Skip the size chart itself and our card.
+    const anchor = [...document.querySelectorAll("div, span, p, h2, h3")]
+      .find((e) => e.children.length === 0 && /^select size$/i.test(cellText(e)));
+    const scope = anchor ? (anchor.closest("div") && anchor.closest("div").parentElement && anchor.closest("div").parentElement.parentElement) || document.body : document.body;
+    const pick = (root) => [...root.querySelectorAll("button, a, li, div, span, p")].find((el) => {
+      if (el.closest("#snugz-card, table, [role='dialog']")) return false;
+      if (cellText(el).toUpperCase() !== want || el.querySelector("*:not(span)")) return false;
+      const r = el.getBoundingClientRect();
+      return r.width > 0 && r.width < 140 && r.height > 0 && r.height < 90;
+    });
+    const el = pick(scope) || pick(document.body);
+    if (el) {
+      // ring the clickable chip, not just the text inside it
+      let chip = el;
+      while (chip.parentElement && cellText(chip.parentElement).toUpperCase() === want && chip.parentElement.getBoundingClientRect().width < 140) chip = chip.parentElement;
+      chip.classList.add("snugz-hit");
     }
   }
 

@@ -16,3 +16,6 @@ node_modules/
 # packaged extension builds
 *.zip
 *.crx
+
+# the installable extension download on the website is allowed
+!website/downloads/*.zip

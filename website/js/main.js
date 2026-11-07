@@ -98,11 +98,7 @@ $$(".faq-item").forEach((item) => {
   });
 });
 
-/* ---------- placeholders until backend / store listing exist ---------- */
-$$(".chrome").forEach((a) => a.addEventListener("click", (e) => {
-  e.preventDefault();
-  toast("The Chrome Web Store link goes here once the extension is published.");
-}));
+/* ---------- placeholder until the newsletter backend exists ---------- */
 $("#news").addEventListener("submit", (e) => {
   e.preventDefault();
   e.target.innerHTML = `<span class="sticker mint" style="transform:none">You're on the list ✓</span>`;

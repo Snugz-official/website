@@ -264,7 +264,6 @@ function toast(msg) {
   document.body.appendChild(t);
   setTimeout(() => t.remove(), 4000);
 }
-$("#chromeBtn").addEventListener("click", (e) => { e.preventDefault(); alert("Wireframe: this opens the Snugz listing on the Chrome Web Store once published."); });
 
 /* ---------- confetti in brand colours ---------- */
 function confetti() {

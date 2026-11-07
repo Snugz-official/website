@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Install Snugz in Chrome</title>
+  <meta name="theme-color" content="#FFFFFF" />
+  <link rel="icon" href="assets/snugz-icon-64.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,600;12..96,700;12..96,800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css?v=3" />
+  <link rel="stylesheet" href="css/onboarding.css?v=3" />
+  <style>
+    .steps-list { list-style: none; display: grid; gap: 12px; margin: 22px 0 26px; counter-reset: s; }
+    .steps-list li { display: grid; grid-template-columns: 40px 1fr; gap: 14px; align-items: start; padding: 14px 16px; border: var(--edge); border-radius: var(--r); background: var(--white); box-shadow: var(--pop-sm); font-size: 16px; }
+    .steps-list li::before { counter-increment: s; content: counter(s); width: 40px; height: 40px; border-radius: 50%; border: var(--edge); background: var(--orange); display: grid; place-items: center; font-weight: 800; }
+    .steps-list b { display: block; font-size: 17px; }
+    .steps-list code { font: 700 14px/1 ui-monospace, Consolas, monospace; background: var(--lilac-lt); border: 2px solid var(--ink); border-radius: 8px; padding: 3px 7px; display: inline-block; margin-top: 6px; cursor: pointer; }
+    .soon { display: block; text-align: center; margin-top: 14px; font-size: 14px; color: #6A60A0; }
+  </style>
+</head>
+<body class="ob">
+  <header class="ob-head">
+    <a href="index.html" class="ob-logo"><img src="assets/snugz-icon-192.png" alt="" width="76" height="76" /><span>snugz</span></a>
+  </header>
+
+  <main class="ob-stage">
+    <div class="ob-card">
+      <section class="pane active">
+        <span class="eyebrow">Install the extension</span>
+        <h1>Add Snugz to Chrome</h1>
+        <p class="sub">Takes about a minute. Works on Chrome and Edge on your laptop or desktop.</p>
+
+        <a class="btn btn-orange btn-block" href="downloads/snugz-extension.zip" download>Download Snugz (.zip)</a>
+
+        <ol class="steps-list">
+          <li><span><b>Unzip the download</b>Right-click the file → <em>Extract All</em>. You'll get a <em>snugz-extension</em> folder.</span></li>
+          <li><span><b>Open Chrome's extensions page</b>Copy this into the address bar:<br /><code id="ext" title="Click to copy">chrome://extensions</code></span></li>
+          <li><span><b>Turn on "Developer mode"</b>The switch is in the top-right corner.</span></li>
+          <li><span><b>Click "Load unpacked"</b>Choose the <em>snugz-extension</em> folder, then pin Snugz from the puzzle-piece menu.</span></li>
+          <li><span><b>Log in from the Snugz icon</b>Use the same email and password as your fit profile, then open any shirt or jeans on Flipkart or Myntra and open its size chart.</span></li>
+        </ol>
+
+        <a class="btn btn-block" href="onboarding.html">Don't have a fit profile yet? Create one</a>
+        <span class="soon">One-click install from the Chrome Web Store is coming soon.</span>
+      </section>
+    </div>
+  </main>
+
+  <script>
+    document.getElementById("ext").addEventListener("click", (e) => {
+      navigator.clipboard.writeText("chrome://extensions").then(() => { e.target.textContent = "Copied ✓"; setTimeout(() => (e.target.textContent = "chrome://extensions"), 1500); });
+    });
+  </script>
+</body>
+</html>
