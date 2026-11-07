@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Snugz · Wireframe A: Electric Mono</title>
+<link rel="icon" href="../assets/logo-64.png" />
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+<style>
+/* A: ELECTRIC MONO
+   White canvas, near-black ink, ONE electric violet accent.
+   The full logo gradient appears in exactly one place (the extension badge). */
+:root{
+  --ink:#0A0033; --paper:#FFFFFF; --soft:#F4F1FF; --line:#E3DCFF;
+  --violet:#7301FD; --violet-2:#5302E2; --coral:#FF3929; --orange:#FE8501;
+  --grad:linear-gradient(115deg,#7301FD 0%,#5302E2 45%,#FF3929 80%,#FE8501 100%);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:"Inter Tight",system-ui,sans-serif;background:var(--paper);color:var(--ink);-webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration:none}
+button{font:inherit;cursor:pointer;border:0;background:none;color:inherit}
+.wrap{width:min(1120px,90vw);margin:0 auto}
+.tag{display:inline-block;font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--violet)}
+.wf{position:fixed;left:16px;bottom:16px;z-index:99;background:var(--ink);color:#fff;font-size:12px;font-weight:600;padding:8px 12px;border-radius:8px}
+.wf a{text-decoration:underline}
+
+/* nav */
+nav{display:flex;justify-content:space-between;align-items:center;padding:24px 0}
+.brand{display:flex;align-items:center;gap:10px;font-weight:900;font-size:22px;letter-spacing:-.03em}
+.brand img{width:32px;height:32px;border-radius:8px}
+.links{display:flex;gap:32px;font-weight:500;font-size:15px}
+.links a:hover{color:var(--violet)}
+
+/* buttons: solid, flat, high contrast */
+.btn{display:inline-flex;align-items:center;gap:10px;height:56px;padding:0 28px;border-radius:14px;font-weight:700;font-size:16px;transition:transform .15s,background .15s}
+.btn:active{transform:scale(.97)}
+.btn-main{background:var(--violet);color:#fff}
+.btn-main:hover{background:var(--violet-2)}
+.btn-line{border:2px solid var(--ink)}
+.btn-line:hover{background:var(--ink);color:#fff}
+.btn-sm{height:44px;padding:0 20px;font-size:15px;border-radius:12px}
+
+/* hero */
+.hero{padding:96px 0 120px;display:grid;grid-template-columns:1.15fr .85fr;gap:64px;align-items:center}
+h1{font-size:clamp(52px,7.6vw,104px);line-height:.92;letter-spacing:-.055em;font-weight:900}
+h1 em{font-style:normal;color:var(--violet)}
+.hero p{font-size:20px;line-height:1.5;color:#3B3466;margin:28px 0 36px;max-width:500px}
+.row{display:flex;gap:12px;flex-wrap:wrap}
+.fine{margin-top:20px;font-size:14px;color:#6B6596}
+
+/* product mock + badge */
+.mock{border:2px solid var(--ink);border-radius:20px;padding:20px;position:relative;background:#fff}
+.mock .img{aspect-ratio:4/3;background:var(--soft);border-radius:12px;display:grid;place-items:center;font-weight:800;color:#B9ADEB;font-size:14px;letter-spacing:.1em}
+.mock h4{font-size:17px;margin:16px 0 4px}
+.mock .price{font-weight:800;font-size:20px}
+.sizes{display:flex;gap:8px;margin-top:14px}
+.sizes span{flex:1;height:42px;display:grid;place-items:center;border:2px solid var(--line);border-radius:10px;font-weight:700;font-size:14px}
+.sizes span.hit{border-color:var(--violet);background:var(--violet);color:#fff}
+.badge{position:absolute;right:-28px;top:-28px;background:var(--grad);color:#fff;border-radius:18px;padding:16px 20px;min-width:190px;box-shadow:0 12px 0 -4px var(--ink)}
+.badge small{display:flex;align-items:center;gap:8px;font-size:12px;font-weight:700;opacity:.95}
+.badge small img{width:18px;height:18px;border-radius:5px}
+.badge b{display:block;font-size:44px;line-height:1;margin-top:6px;font-weight:900;letter-spacing:-.03em}
+.badge span{font-size:13px;font-weight:600}
+
+/* sections */
+section{padding:120px 0;border-top:1px solid var(--line)}
+h2{font-size:clamp(38px,5vw,64px);line-height:.98;letter-spacing:-.045em;font-weight:900;margin:14px 0 20px}
+.lede{font-size:19px;color:#3B3466;max-width:560px;line-height:1.5}
+.three{display:grid;grid-template-columns:repeat(3,1fr);gap:0;margin-top:64px;border:2px solid var(--ink);border-radius:20px;overflow:hidden}
+.three div{padding:36px 32px;border-right:2px solid var(--ink)}
+.three div:last-child{border-right:0}
+.three .n{font-size:64px;font-weight:900;color:var(--violet);letter-spacing:-.05em;line-height:1}
+.three h3{font-size:22px;margin:20px 0 8px;letter-spacing:-.02em}
+.three p{color:#3B3466;line-height:1.5}
+
+/* measurement form */
+.form{display:grid;grid-template-columns:.9fr 1.1fr;gap:64px;align-items:start}
+.tabs{display:inline-flex;border:2px solid var(--ink);border-radius:14px;padding:4px;margin-bottom:28px}
+.tabs button{height:44px;padding:0 22px;border-radius:10px;font-weight:700}
+.tabs button.on{background:var(--ink);color:#fff}
+.field{display:grid;grid-template-columns:1fr auto;align-items:center;gap:16px;padding:22px 0;border-bottom:2px solid var(--soft)}
+.field label{font-weight:700;font-size:18px}
+.field small{display:block;font-weight:500;font-size:14px;color:#6B6596;margin-top:4px}
+.num{display:flex;align-items:center;border:2px solid var(--ink);border-radius:12px;overflow:hidden}
+.num button{width:44px;height:48px;font-size:20px;font-weight:700}
+.num button:hover{background:var(--violet);color:#fff}
+.num output{width:84px;text-align:center;font-weight:800;font-size:18px;border-inline:2px solid var(--ink);line-height:48px}
+.diagram{background:var(--soft);border-radius:20px;aspect-ratio:1;max-width:440px;display:grid;place-items:center;position:relative}
+.diagram svg{width:62%}
+.diagram .lbl{position:absolute;background:var(--violet);color:#fff;font-size:12px;font-weight:700;padding:6px 10px;border-radius:8px}
+
+/* extension block */
+.ext{background:var(--ink);color:#fff;border-radius:28px;padding:80px;display:grid;grid-template-columns:1fr 1fr;gap:56px;align-items:center}
+.ext h2{color:#fff}
+.ext .lede{color:#CFC6FF}
+.ext .tag{color:var(--orange)}
+.pop{background:#fff;color:var(--ink);border-radius:20px;padding:24px;max-width:340px;justify-self:center;width:100%}
+.pop .top{display:flex;align-items:center;gap:10px;font-weight:700;font-size:14px}
+.pop .top img{width:28px;border-radius:7px}
+.pop .size{font-size:88px;font-weight:900;letter-spacing:-.06em;line-height:1;margin:16px 0 4px;color:var(--violet)}
+.pop .rows div{display:flex;justify-content:space-between;padding:10px 0;border-top:1px solid var(--line);font-size:14px}
+.pop .rows b{color:#00A86B}
+
+/* footer cta */
+.end{text-align:center;padding:140px 0}
+.end h2{font-size:clamp(48px,7vw,96px)}
+footer{display:flex;justify-content:space-between;padding:32px 0;border-top:1px solid var(--line);font-size:14px;color:#6B6596}
+
+@media(max-width:900px){.hero,.form,.ext{grid-template-columns:1fr}.three{grid-template-columns:1fr}.three div{border-right:0;border-bottom:2px solid var(--ink)}.links{display:none}.ext{padding:40px 28px}.badge{right:-8px}}
+</style>
+</head>
+<body>
+<div class="wf">Wireframe A · Electric Mono · <a href="index.html">all options</a></div>
+
+<div class="wrap">
+  <nav>
+    <a class="brand" href="#"><img src="../assets/logo-64.png" alt="">snugz</a>
+    <div class="links"><a href="#how">How it works</a><a href="#profile">Your fit</a><a href="#ext">Extension</a></div>
+    <a class="btn btn-main btn-sm" href="#">Get started</a>
+  </nav>
+
+  <div class="hero">
+    <div>
+      <span class="tag">Size matching for Myntra &amp; Flipkart</span>
+      <h1 style="margin-top:18px">Your size.<br><em>Every</em> brand.</h1>
+      <p>Save your measurements once. Snugz reads each product's size chart and shows the one size that fits you.</p>
+      <div class="row">
+        <a class="btn btn-main" href="#">Create free account →</a>
+        <a class="btn btn-line" href="#how">How it works</a>
+      </div>
+      <div class="fine">Free · 2-minute setup · Chrome extension</div>
+    </div>
+    <div class="mock">
+      <div class="img">PRODUCT IMAGE</div>
+      <h4>Relaxed Fit Oxford Shirt</h4>
+      <div class="price">₹1,299</div>
+      <div class="sizes"><span>S</span><span>M</span><span class="hit">L</span><span>XL</span></div>
+      <div class="badge"><small><img src="../assets/logo-64.png" alt="">Snugz says</small><b>L</b><span>fits you · 94% match</span></div>
+    </div>
+  </div>
+</div>
+
+<section id="how"><div class="wrap">
+  <span class="tag">How it works</span>
+  <h2>Three steps.<br>Then never think about size again.</h2>
+  <div class="three">
+    <div><div class="n">01</div><h3>Create account</h3><p>Email or Google. Your fit is saved to your account.</p></div>
+    <div><div class="n">02</div><h3>Add measurements</h3><p>Shirt: chest, shoulder, sleeve. Jeans: waist, length.</p></div>
+    <div><div class="n">03</div><h3>Shop as usual</h3><p>Open a product. Your size appears on the page.</p></div>
+  </div>
+</div></section>
+
+<section id="profile"><div class="wrap form">
+  <div>
+    <span class="tag">Your fit profile</span>
+    <h2>Measure once.<br>Adjust anytime.</h2>
+    <p class="lede">Use a soft tape. Each field shows exactly where to measure.</p>
+    <div class="diagram" style="margin-top:36px">
+      <svg viewBox="0 0 200 220" fill="none" stroke="#0A0033" stroke-width="4" stroke-linejoin="round"><path d="M70 20 L40 35 L10 80 L35 95 L50 75 L50 200 L150 200 L150 75 L165 95 L190 80 L160 35 L130 20 Q100 40 70 20Z"/><path d="M52 80 H148" stroke="#7301FD" stroke-dasharray="6 6"/><path d="M70 20 H130" stroke="#FF3929" stroke-dasharray="6 6"/><path d="M160 35 L190 80" stroke="#FE8501" stroke-width="6"/></svg>
+      <span class="lbl" style="left:12%;top:40%">Chest</span>
+      <span class="lbl" style="left:40%;top:10%;background:#FF3929">Shoulder</span>
+      <span class="lbl" style="right:8%;top:28%;background:#FE8501;color:#0A0033">Sleeve</span>
+    </div>
+  </div>
+  <div>
+    <div class="tabs"><button class="on" data-t="shirt">Shirts &amp; tops</button><button data-t="jeans">Jeans</button></div>
+    <div id="shirt">
+      <div class="field"><div><label>Chest</label><small>Around the fullest part of your chest</small></div><div class="num"><button>−</button><output>40"</output><button>+</button></div></div>
+      <div class="field"><div><label>Shoulder width</label><small>Shoulder tip to shoulder tip, across the back</small></div><div class="num"><button>−</button><output>17.5"</output><button>+</button></div></div>
+      <div class="field"><div><label>Sleeve length</label><small>Shoulder tip to wrist, arm relaxed</small></div><div class="num"><button>−</button><output>25"</output><button>+</button></div></div>
+    </div>
+    <div id="jeans" hidden>
+      <div class="field"><div><label>Waist</label><small>Where you wear your jeans, usually at the belly button</small></div><div class="num"><button>−</button><output>32"</output><button>+</button></div></div>
+      <div class="field"><div><label>Length</label><small>Inside leg, crotch to ankle (inseam)</small></div><div class="num"><button>−</button><output>31"</output><button>+</button></div></div>
+    </div>
+    <div class="row" style="margin-top:32px"><a class="btn btn-main" href="#">Save my fit</a></div>
+  </div>
+</div></section>
+
+<section id="ext" style="border:0;padding-top:40px"><div class="wrap">
+  <div class="ext">
+    <div>
+      <span class="tag">The extension</span>
+      <h2>It shows up<br>right on the product page.</h2>
+      <p class="lede">No copy-pasting, no size charts to read. Open a product on Myntra or Flipkart and Snugz tells you your size.</p>
+      <div class="row" style="margin-top:32px"><a class="btn btn-main" href="#">Add to Chrome, free</a></div>
+    </div>
+    <div class="pop">
+      <div class="top"><img src="../assets/logo-64.png" alt="">Snugz · your size here</div>
+      <div class="size">L</div>
+      <div class="rows">
+        <div>Chest <b>Perfect</b></div>
+        <div>Shoulder <b>Perfect</b></div>
+        <div>Sleeve <b>+0.5" long</b></div>
+      </div>
+    </div>
+  </div>
+</div></section>
+
+<div class="wrap">
+  <div class="end">
+    <h2>Stop guessing.<br><span style="color:var(--violet)">Start fitting.</span></h2>
+    <div class="row" style="justify-content:center;margin-top:36px"><a class="btn btn-main" href="#">Create free account →</a></div>
+  </div>
+  <footer><span>© 2026 Snugz</span><span>Privacy · Terms · Contact</span></footer>
+</div>
+
+<script>
+document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>{
+  document.querySelectorAll('.tabs button').forEach(x=>x.classList.toggle('on',x===b));
+  document.getElementById('shirt').hidden=b.dataset.t!=='shirt';
+  document.getElementById('jeans').hidden=b.dataset.t!=='jeans';
+});
+</script>
+</body>
+</html>

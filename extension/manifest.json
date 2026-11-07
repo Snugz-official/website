@@ -1,0 +1,26 @@
+{
+  "manifest_version": 3,
+  "name": "Snugz – Your size, every brand",
+  "short_name": "Snugz",
+  "version": "0.1.0",
+  "description": "Save your measurements once. Snugz reads the size chart on Myntra and Flipkart product pages and shows the size that fits you.",
+  "icons": { "16": "icons/icon-16.png", "32": "icons/icon-32.png", "48": "icons/icon-48.png", "128": "icons/icon-128.png" },
+  "action": {
+    "default_title": "Snugz",
+    "default_popup": "popup.html",
+    "default_icon": { "16": "icons/icon-16.png", "32": "icons/icon-32.png" }
+  },
+  "permissions": ["storage"],
+  "host_permissions": ["https://qcikmaqfkgxpfdynlghs.supabase.co/*"],
+  "content_scripts": [
+    {
+      "matches": ["https://www.myntra.com/*", "https://www.flipkart.com/*"],
+      "js": ["config.js", "match.js", "content.js"],
+      "css": ["content.css"],
+      "run_at": "document_idle"
+    }
+  ],
+  "web_accessible_resources": [
+    { "resources": ["icons/icon-48.png"], "matches": ["https://www.myntra.com/*", "https://www.flipkart.com/*"] }
+  ]
+}

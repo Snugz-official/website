@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Snugz · Pick a direction</title>
+<link rel="icon" href="../assets/logo-64.png" />
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@500;700;900&display=swap" rel="stylesheet" />
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:"Inter Tight",system-ui,sans-serif;background:#FFFFFF;color:#0A0033;padding:56px 5vw}
+h1{font-size:clamp(36px,5vw,64px);letter-spacing:-.05em;font-weight:900;line-height:1}
+p.sub{font-size:18px;color:#4A4280;margin:14px 0 40px;max-width:640px}
+.palette{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:48px}
+.sw{width:120px;border-radius:14px;overflow:hidden;border:2px solid #0A0033;font-size:12px;font-weight:700}
+.sw i{display:block;height:64px}
+.sw span{display:block;padding:8px 10px}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+a.opt{display:block;border:2px solid #0A0033;border-radius:22px;overflow:hidden;color:inherit;text-decoration:none;transition:transform .15s}
+a.opt:hover{transform:translateY(-4px)}
+.prev{height:220px;display:grid;place-items:center;font-weight:900;font-size:44px;letter-spacing:-.05em}
+.info{padding:22px;border-top:2px solid #0A0033}
+.info h2{font-size:24px;letter-spacing:-.03em}
+.info p{color:#4A4280;margin-top:8px;line-height:1.45;font-size:15px}
+.info b{display:inline-block;margin-top:14px;font-size:14px}
+@media(max-width:900px){.grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+  <h1>Pick your Snugz direction.</h1>
+  <p class="sub">Three minimalist, high-contrast directions, all built on colours sampled straight from your logo. Open each one, then tell me A, B or C.</p>
+
+  <div class="palette">
+    <div class="sw"><i style="background:#7301FD"></i><span>Electric Violet<br>#7301FD</span></div>
+    <div class="sw"><i style="background:#5302E2"></i><span>Blue Violet<br>#5302E2</span></div>
+    <div class="sw"><i style="background:#0E0287"></i><span>Deep Indigo<br>#0E0287</span></div>
+    <div class="sw"><i style="background:#FF3929"></i><span>Coral Red<br>#FF3929</span></div>
+    <div class="sw"><i style="background:#FE8501"></i><span>Signal Orange<br>#FE8501</span></div>
+    <div class="sw"><i style="background:#E5D2FD"></i><span>Lilac<br>#E5D2FD</span></div>
+    <div class="sw"><i style="background:#0A0033"></i><span>Ink<br>#0A0033</span></div>
+  </div>
+
+  <div class="grid">
+    <a class="opt" href="a-electric-mono.html">
+      <div class="prev" style="background:#fff;color:#0A0033">Your size.<span style="color:#7301FD">&nbsp;Every</span></div>
+      <div class="info"><h2>A · Electric Mono</h2><p>White canvas, ink type, one electric-violet accent. The calmest and most premium of the three, closest to Apple or Linear.</p><b>Open A →</b></div>
+    </a>
+    <a class="opt" href="b-ink-neon.html">
+      <div class="prev" style="background:#07012A;color:#fff">Same size.<span style="color:#FE8501">&nbsp;Fixed.</span></div>
+      <div class="info"><h2>B · Ink &amp; Neon</h2><p>Deep indigo background, white type, solid violet, orange and coral blocks in a bento grid. Dark, modern and tech-forward.</p><b>Open B →</b></div>
+    </a>
+    <a class="opt" href="c-colour-block.html">
+      <div class="prev" style="background:#7301FD;color:#fff">No more <span style="background:#FE8501;color:#0A0033;padding:0 8px;border-radius:8px;margin-left:8px">wrong</span></div>
+      <div class="info"><h2>C · Colour Block</h2><p>Full-width sections in solid logo colours, thick outlines and chunky buttons. The loudest and most playful, with a one-question-at-a-time fit setup.</p><b>Open C →</b></div>
+    </a>
+  </div>
+</body>
+</html>

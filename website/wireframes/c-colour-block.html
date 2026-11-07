@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Snugz · Wireframe C: Colour Block</title>
+<link rel="icon" href="../assets/logo-64.png" />
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,700;12..96,800&display=swap" rel="stylesheet" />
+<style>
+/* C: COLOUR BLOCK
+   Full-bleed sections in solid logo colours. Thick ink outlines + hard offset shadows.
+   Playful, loud, very Gen Z. Every section is one colour, so it never feels busy. */
+:root{
+  --ink:#0A0033; --white:#FFFFFF; --violet:#7301FD; --blue:#5302E2; --deep:#0E0287;
+  --coral:#FF3929; --orange:#FE8501; --lilac:#E5D2FD;
+  --edge:3px solid var(--ink); --pop:6px 6px 0 var(--ink);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:"Bricolage Grotesque",system-ui,sans-serif;color:var(--ink);background:var(--white);-webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration:none}
+button{font:inherit;cursor:pointer;border:0;background:none;color:inherit}
+.wrap{width:min(1160px,90vw);margin:0 auto}
+.wf{position:fixed;left:16px;bottom:16px;z-index:99;background:var(--white);border:var(--edge);font-size:12px;font-weight:700;padding:8px 12px;border-radius:10px}
+.wf a{text-decoration:underline}
+
+.btn{display:inline-flex;align-items:center;gap:10px;height:60px;padding:0 30px;border-radius:999px;font-weight:800;font-size:17px;border:var(--edge);box-shadow:var(--pop);transition:transform .12s,box-shadow .12s}
+.btn:hover{transform:translate(-2px,-2px);box-shadow:8px 8px 0 var(--ink)}
+.btn:active{transform:translate(4px,4px);box-shadow:2px 2px 0 var(--ink)}
+.btn-white{background:var(--white);color:var(--ink)}
+.btn-orange{background:var(--orange)}
+.btn-violet{background:var(--violet);color:#fff}
+.btn-sm{height:46px;padding:0 20px;font-size:15px;box-shadow:4px 4px 0 var(--ink)}
+.sticker{display:inline-block;background:var(--orange);border:var(--edge);border-radius:999px;padding:6px 14px;font-weight:800;font-size:14px;transform:rotate(-3deg)}
+
+/* HERO: solid violet */
+.hero{background:var(--violet);color:#fff;padding-bottom:110px;border-bottom:var(--edge)}
+nav{display:flex;justify-content:space-between;align-items:center;padding:22px 0}
+.brand{display:flex;align-items:center;gap:10px;font-weight:800;font-size:26px;letter-spacing:-.03em}
+.brand img{width:40px;border-radius:11px;border:3px solid #fff}
+.links{display:flex;gap:28px;font-weight:600;font-size:16px}
+.hero-grid{display:grid;grid-template-columns:1.2fr .8fr;gap:48px;align-items:center;padding-top:70px}
+h1{font-size:clamp(56px,8.5vw,128px);line-height:.88;letter-spacing:-.05em;font-weight:800}
+h1 .hl{background:var(--orange);color:var(--ink);padding:0 .12em;border-radius:.12em;display:inline-block;transform:rotate(-2deg)}
+.hero p{font-size:21px;line-height:1.45;margin:30px 0 38px;max-width:520px;color:#F1E8FF}
+.row{display:flex;gap:14px;flex-wrap:wrap;align-items:center}
+
+/* hero card */
+.card{background:#fff;color:var(--ink);border:var(--edge);border-radius:28px;box-shadow:10px 10px 0 var(--ink);padding:24px;transform:rotate(2deg)}
+.card .ph{background:var(--lilac);border:var(--edge);border-radius:18px;aspect-ratio:4/3;display:grid;place-items:center;font-weight:800;font-size:13px;letter-spacing:.1em}
+.card h4{font-size:20px;margin:16px 0 2px}
+.sizes{display:flex;gap:8px;margin-top:14px}
+.sizes span{flex:1;height:46px;display:grid;place-items:center;border:var(--edge);border-radius:12px;font-weight:800}
+.sizes span.hit{background:var(--orange);box-shadow:3px 3px 0 var(--ink)}
+.card .say{margin-top:16px;background:var(--ink);color:#fff;border-radius:16px;padding:14px 16px;display:flex;align-items:center;gap:12px;font-weight:700}
+.card .say img{width:30px;border-radius:8px}
+.card .say b{color:var(--orange);font-size:22px}
+
+/* marquee */
+.ticker{background:var(--ink);color:#fff;overflow:hidden;border-bottom:var(--edge)}
+.ticker div{display:flex;gap:40px;width:max-content;padding:18px 0;font-weight:800;font-size:22px;animation:t 24s linear infinite}
+.ticker span{color:var(--orange)}
+@keyframes t{to{transform:translateX(-50%)}}
+
+/* STEPS: three colour rows */
+.stepsec{padding:110px 0}
+h2{font-size:clamp(42px,5.5vw,76px);line-height:.95;letter-spacing:-.045em;font-weight:800}
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;margin-top:56px}
+.st{border:var(--edge);border-radius:28px;box-shadow:var(--pop);padding:32px;min-height:300px;display:flex;flex-direction:column;justify-content:space-between}
+.st .n{width:58px;height:58px;border-radius:50%;border:var(--edge);background:#fff;display:grid;place-items:center;font-weight:800;font-size:24px}
+.st h3{font-size:30px;letter-spacing:-.03em;line-height:1}
+.st p{font-size:16px;margin-top:10px;line-height:1.45}
+.s1{background:var(--lilac)} .s2{background:var(--orange)} .s3{background:var(--coral);color:#fff}
+
+/* FIT: one question at a time, on solid orange */
+.fit{background:var(--orange);border-block:var(--edge);padding:110px 0}
+.fit-grid{display:grid;grid-template-columns:.9fr 1.1fr;gap:56px;align-items:center}
+.fit p.lede{font-size:20px;line-height:1.45;margin-top:20px;max-width:440px}
+.q{background:#fff;border:var(--edge);border-radius:30px;box-shadow:10px 10px 0 var(--ink);padding:36px}
+.q .top{display:flex;justify-content:space-between;align-items:center;font-weight:700;font-size:14px}
+.dots{display:flex;gap:6px}
+.dots i{width:28px;height:8px;border-radius:8px;background:var(--lilac);border:2px solid var(--ink)}
+.dots i.on{background:var(--violet)}
+.q .cat{margin-top:26px;font-weight:800;font-size:14px;color:var(--violet);text-transform:uppercase;letter-spacing:.1em}
+.q h3{font-size:44px;letter-spacing:-.04em;line-height:1;margin:8px 0 6px}
+.q .help{font-size:16px;color:#4A4280}
+.picker{display:flex;align-items:center;justify-content:space-between;margin:30px 0;border:var(--edge);border-radius:22px;padding:10px}
+.picker button{width:64px;height:64px;border-radius:16px;border:var(--edge);background:var(--lilac);font-size:28px;font-weight:800}
+.picker button:hover{background:var(--violet);color:#fff}
+.picker output{font-size:64px;font-weight:800;letter-spacing:-.04em}
+.picker output small{font-size:22px}
+.q .nav{display:flex;justify-content:space-between;align-items:center}
+.q .back{font-weight:700;text-decoration:underline}
+
+/* EXTENSION: deep ink */
+.ext{background:var(--deep);color:#fff;padding:110px 0}
+.ext-grid{display:grid;grid-template-columns:1fr 1fr;gap:56px;align-items:center}
+.ext p{font-size:20px;line-height:1.45;margin:22px 0 34px;color:#D9CCFF}
+.pop{background:#fff;color:var(--ink);border:3px solid #fff;border-radius:30px;padding:28px;box-shadow:10px 10px 0 var(--orange);max-width:380px;justify-self:center;width:100%}
+.pop .hd{display:flex;align-items:center;gap:10px;font-weight:800}
+.pop .hd img{width:34px;border-radius:9px}
+.pop .big{display:flex;align-items:center;gap:18px;margin:20px 0}
+.pop .big b{width:110px;height:110px;border-radius:28px;background:var(--violet);color:#fff;border:var(--edge);display:grid;place-items:center;font-size:60px}
+.pop .big span{font-size:20px;font-weight:700;line-height:1.2}
+.pop .chk div{display:flex;justify-content:space-between;padding:12px 0;border-top:2px solid var(--lilac);font-weight:700}
+.pop .chk em{font-style:normal;background:#C8FFE3;padding:2px 10px;border-radius:999px;border:2px solid var(--ink);font-size:14px}
+.pop .chk em.w{background:var(--orange)}
+
+/* END: coral */
+.end{background:var(--coral);color:#fff;text-align:center;padding:130px 0;border-top:var(--edge)}
+.end h2{font-size:clamp(52px,8vw,120px)}
+footer{background:var(--ink);color:#B9AEF0;padding:28px 0;font-size:14px}
+footer .wrap{display:flex;justify-content:space-between}
+
+@media(max-width:900px){.hero-grid,.fit-grid,.ext-grid{grid-template-columns:1fr}.steps{grid-template-columns:1fr}.links{display:none}.card{transform:none}}
+</style>
+</head>
+<body>
+<div class="wf">Wireframe C · Colour Block · <a href="index.html">all options</a></div>
+
+<header class="hero">
+  <div class="wrap">
+    <nav>
+      <a class="brand" href="#"><img src="../assets/logo-64.png" alt="">snugz</a>
+      <div class="links"><a href="#how">How it works</a><a href="#fit">Your fit</a><a href="#ext">Extension</a></div>
+      <a class="btn btn-white btn-sm" href="#">Sign up</a>
+    </nav>
+    <div class="hero-grid">
+      <div>
+        <span class="sticker">Free for Myntra &amp; Flipkart</span>
+        <h1 style="margin-top:22px">No more<br><span class="hl">wrong</span><br>sizes.</h1>
+        <p>Your measurements, saved once. Snugz checks every product's size chart and tells you what fits.</p>
+        <div class="row"><a class="btn btn-orange" href="#">Make my fit profile →</a><a class="btn btn-white" href="#how">How it works</a></div>
+      </div>
+      <div class="card">
+        <div class="ph">PRODUCT IMAGE</div>
+        <h4>Relaxed Fit Oxford Shirt</h4><div style="font-weight:800">₹1,299</div>
+        <div class="sizes"><span>S</span><span>M</span><span class="hit">L</span><span>XL</span></div>
+        <div class="say"><img src="../assets/logo-64.png" alt=""><span>Snugz: <b>L</b> fits you</span></div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<div class="ticker"><div>
+  <p>Measure once <span>✦</span> Fits every brand <span>✦</span> Zero guessing <span>✦</span> Fewer returns <span>✦</span></p>
+  <p>Measure once <span>✦</span> Fits every brand <span>✦</span> Zero guessing <span>✦</span> Fewer returns <span>✦</span></p>
+</div></div>
+
+<section class="stepsec" id="how"><div class="wrap">
+  <h2>Three steps.<br>That's literally it.</h2>
+  <div class="steps">
+    <div class="st s1"><div class="n">1</div><div><h3>Sign up</h3><p>Email or Google, 20 seconds.</p></div></div>
+    <div class="st s2"><div class="n">2</div><div><h3>Add your fit</h3><p>Shirts: chest, shoulder, sleeve. Jeans: waist, length.</p></div></div>
+    <div class="st s3"><div class="n">3</div><div><h3>Shop</h3><p>Your size shows up on every product page.</p></div></div>
+  </div>
+</div></section>
+
+<section class="fit" id="fit"><div class="wrap fit-grid">
+  <div>
+    <span class="sticker" style="background:#fff">One question at a time</span>
+    <h2 style="margin-top:20px">Building your fit<br>feels like a chat.</h2>
+    <p class="lede">Five quick questions. Each one shows you exactly where to measure.</p>
+  </div>
+  <div class="q">
+    <div class="top"><span id="qn">Question 1 of 5</span><div class="dots" id="dots"><i class="on"></i><i></i><i></i><i></i><i></i></div></div>
+    <div class="cat" id="qcat">Shirts</div>
+    <h3 id="qt">What's your chest?</h3>
+    <div class="help" id="qh">Wrap the tape around the fullest part of your chest.</div>
+    <div class="picker"><button id="minus">−</button><output id="qv">40<small>in</small></output><button id="plus">+</button></div>
+    <div class="nav"><button class="back" id="back">Back</button><button class="btn btn-violet" id="next">Next →</button></div>
+  </div>
+</div></section>
+
+<section class="ext" id="ext"><div class="wrap ext-grid">
+  <div>
+    <span class="sticker">The extension</span>
+    <h2 style="margin-top:20px">It just pops up.<br>Right there.</h2>
+    <p>Open any shirt or jeans on Myntra or Flipkart. Snugz reads that product's size chart and shows your size.</p>
+    <a class="btn btn-orange" href="#">Add to Chrome, free</a>
+  </div>
+  <div class="pop">
+    <div class="hd"><img src="../assets/logo-64.png" alt="">Snugz</div>
+    <div class="big"><b>L</b><span>is your size<br>for this shirt</span></div>
+    <div class="chk">
+      <div>Chest <em>Perfect</em></div>
+      <div>Shoulder <em>Perfect</em></div>
+      <div>Sleeve <em class="w">+0.5" long</em></div>
+    </div>
+  </div>
+</div></section>
+
+<section class="end">
+  <div class="wrap">
+    <h2>Stop guessing.<br>Start fitting.</h2>
+    <div class="row" style="justify-content:center;margin-top:40px"><a class="btn btn-white" href="#">Create free account →</a></div>
+  </div>
+</section>
+<footer><div class="wrap"><span>© 2026 Snugz</span><span>Privacy · Terms · Contact</span></div></footer>
+
+<script>
+const Q=[
+  {c:"Shirts",t:"What's your chest?",h:"Wrap the tape around the fullest part of your chest.",v:40,s:.5},
+  {c:"Shirts",t:"Shoulder width?",h:"From one shoulder tip to the other, across your back.",v:17.5,s:.5},
+  {c:"Shirts",t:"Sleeve length?",h:"From your shoulder tip down to your wrist, arm relaxed.",v:25,s:.5},
+  {c:"Jeans",t:"What's your waist?",h:"Where your jeans usually sit, around the belly button.",v:32,s:1},
+  {c:"Jeans",t:"Jeans length?",h:"Inside leg, from the crotch down to your ankle.",v:31,s:1},
+];
+let i=0;const $=id=>document.getElementById(id);
+function draw(){const q=Q[i];$('qn').textContent=`Question ${i+1} of 5`;$('qcat').textContent=q.c;$('qt').textContent=q.t;$('qh').textContent=q.h;$('qv').innerHTML=q.v+'<small>in</small>';
+  [...$('dots').children].forEach((d,k)=>d.classList.toggle('on',k<=i));$('next').textContent=i===4?'Save my fit ✓':'Next →';}
+$('plus').onclick=()=>{Q[i].v+=Q[i].s;draw()};$('minus').onclick=()=>{Q[i].v-=Q[i].s;draw()};
+$('next').onclick=()=>{if(i<4){i++;draw()}};$('back').onclick=()=>{if(i>0){i--;draw()}};
+</script>
+</body>
+</html>

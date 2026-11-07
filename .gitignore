@@ -1,0 +1,18 @@
+# secrets: never commit these
+.env
+.env.*
+*.pem
+*.key
+
+# local tools / OS files
+.claude/
+*.lnk
+Thumbs.db
+desktop.ini
+.DS_Store
+node_modules/
+.vercel/
+
+# packaged extension builds
+*.zip
+*.crx

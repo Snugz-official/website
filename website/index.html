@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Snugz · No more wrong sizes</title>
+  <meta name="description" content="Save your measurements once. Snugz reads every product's size chart on Myntra and Flipkart and tells you the size that fits." />
+  <meta name="theme-color" content="#0C036F" />
+  <link rel="icon" href="assets/snugz-icon-64.png" />
+  <link rel="apple-touch-icon" href="assets/snugz-icon-192.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,600;12..96,700;12..96,800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+<!-- ============ icon sprite ============ -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="i-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></symbol>
+    <symbol id="i-minus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M5 12h14"/></symbol>
+    <symbol id="i-plus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></symbol>
+    <symbol id="i-lock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><rect x="4.5" y="10.5" width="15" height="10" rx="2.5"/><path d="M8 10.5V7.5a4 4 0 0 1 8 0v3"/></symbol>
+    <symbol id="i-ban" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="12" cy="12" r="8.5"/><path d="M6 6l12 12"/></symbol>
+    <symbol id="i-eye" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12z"/><circle cx="12" cy="12" r="3"/></symbol>
+    <symbol id="i-trash" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M9 7V4.5h6V7M6.5 7l1 13h9l1-13"/></symbol>
+    <symbol id="i-chat" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5.5h16v10H9l-5 4z"/></symbol>
+    <symbol id="i-bolt" viewBox="0 0 24 24" fill="currentColor"><path d="M13.5 2 4 13.5h6.5L9.5 22 20 9.5h-6.5z"/></symbol>
+    <symbol id="i-insta" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="3.5" y="3.5" width="17" height="17" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.3" cy="6.7" r="1" fill="currentColor" stroke="none"/></symbol>
+    <symbol id="i-x" viewBox="0 0 24 24" fill="currentColor"><path d="M17.7 3h3.1l-6.8 7.8L22 21h-6.3l-4.9-6.4L5.2 21H2.1l7.3-8.3L1.8 3h6.4l4.4 5.9zm-1.1 16.2h1.7L7.4 4.7H5.6z"/></symbol>
+    <symbol id="i-in" viewBox="0 0 24 24" fill="currentColor"><path d="M4.5 9h3.2v11H4.5zM6.1 3.8a1.9 1.9 0 1 1 0 3.8 1.9 1.9 0 0 1 0-3.8zM10 9h3.1v1.5h.1c.4-.8 1.5-1.8 3.2-1.8 3.4 0 4 2.2 4 5.1V20h-3.2v-5.4c0-1.3 0-3-1.8-3s-2.1 1.4-2.1 2.9V20H10z"/></symbol>
+    <symbol id="i-yt" viewBox="0 0 24 24" fill="currentColor"><path d="M22 8.2a3 3 0 0 0-2.1-2.1C18 5.6 12 5.6 12 5.6s-6 0-7.9.5A3 3 0 0 0 2 8.2 31 31 0 0 0 1.6 12 31 31 0 0 0 2 15.8a3 3 0 0 0 2.1 2.1c1.9.5 7.9.5 7.9.5s6 0 7.9-.5a3 3 0 0 0 2.1-2.1 31 31 0 0 0 .4-3.8 31 31 0 0 0-.4-3.8zM10 15V9l5.2 3z"/></symbol>
+    <!-- illustrations -->
+    <symbol id="i-shirt" viewBox="0 0 120 120" fill="none" stroke="currentColor" stroke-width="5" stroke-linejoin="round"><path d="M42 14 L18 26 L4 54 L22 62 L30 48 L30 108 L90 108 L90 48 L98 62 L116 54 L102 26 L78 14 Q60 28 42 14Z"/></symbol>
+    <symbol id="i-user" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round"><circle cx="32" cy="22" r="11"/><path d="M12 56c2-11 10-17 20-17s18 6 20 17"/></symbol>
+    <symbol id="i-tape" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"><circle cx="26" cy="30" r="18"/><circle cx="26" cy="30" r="6"/><path d="M26 48h32v10H26"/><path d="M34 48v5M42 48v5M50 48v5"/></symbol>
+    <symbol id="i-bag" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"><path d="M10 22h44l-4 34H14z"/><path d="M22 22v-4a10 10 0 0 1 20 0v4"/><path d="M24 38l6 6 11-12"/></symbol>
+  </defs>
+</svg>
+
+<!-- ============ NAV ============ -->
+<header class="nav solid" id="nav">
+  <div class="wrap nav-in">
+    <a href="#top" class="brand" aria-label="Snugz home"><img src="assets/snugz-icon-64.png" alt="" width="40" height="40" />snugz</a>
+    <nav class="nav-links" aria-label="Main">
+      <a href="#problem">Why Snugz</a>
+      <a href="#how">How it works</a>
+      <a href="#fit">Your fit</a>
+      <a href="#faq">FAQ</a>
+    </nav>
+    <div class="nav-cta">
+      <a href="onboarding.html?mode=login" class="login go">Log in</a>
+      <a href="onboarding.html" class="btn btn-orange btn-sm go">Sign up free</a>
+      <button class="menu-btn" id="menuBtn" aria-label="Open menu" aria-expanded="false"><span></span></button>
+    </div>
+  </div>
+</header>
+<div class="mobile-menu" id="mobileMenu">
+  <a href="#problem">Why Snugz</a>
+  <a href="#how">How it works</a>
+  <a href="#fit">Your fit</a>
+  <a href="#faq">FAQ</a>
+  <a href="onboarding.html" class="btn btn-orange go">Sign up free <svg class="arrow"><use href="#i-arrow"/></svg></a>
+</div>
+
+<main id="top">
+  <!-- ============ HERO ============
+       Psychology: name the pain everyone knows → show the fix within 2 seconds → one clear action. -->
+  <section class="hero tex light">
+    <div class="dots-bg"></div>
+    <div class="wrap hero-grid">
+      <div>
+        <span class="sticker rv-pop" style="--rot:rotate(-2deg)"><svg><use href="#i-bolt"/></svg>Free for Myntra &amp; Flipkart</span>
+        <h1 class="display">
+          <span class="line"><span>No more</span></span>
+          <span class="line"><span><span class="mark">wrong</span></span></span>
+          <span class="line"><span>sizes.</span></span>
+        </h1>
+        <p class="lede rv" style="--i:2">Save your measurements once. Snugz reads every product's size chart and tells you exactly what fits <u>you</u>.</p>
+        <div class="cta-row rv" style="--i:3">
+          <a href="onboarding.html" class="btn btn-orange go">Make my fit profile <svg class="arrow"><use href="#i-arrow"/></svg></a>
+          <a href="#how" class="btn">How it works</a>
+        </div>
+        <div class="trust-row rv" style="--i:4">
+          <span><svg><use href="#i-check"/></svg>Free forever</span>
+          <span><svg><use href="#i-check"/></svg>2-minute setup</span>
+          <span><svg><use href="#i-check"/></svg>Private by default</span>
+        </div>
+      </div>
+
+      <div class="demo rv" style="--i:2" aria-hidden="true">
+        <span class="sticker white float-tag t1">Reading size chart…</span>
+        <span class="sticker mint float-tag t2">0 returns 🎉</span>
+        <div class="pcard" id="pcard">
+          <div class="ph"><svg style="color:#0A0033"><use href="#i-shirt"/></svg><i class="scan"></i></div>
+          <div class="meta"><b>Relaxed Oxford Shirt</b><span>₹1,299</span></div>
+          <div class="lbl">Select size</div>
+          <div class="chips" id="chips"><span class="chip">S</span><span class="chip">M</span><span class="chip">L</span><span class="chip">XL</span><span class="chip">XXL</span></div>
+          <div class="verdict" id="verdict"><img src="assets/snugz-icon-64.png" alt="" /><span>Snugz: <b>L</b> fits you</span><span class="pct">94% match</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ TAPE ============ -->
+  <div class="tape" aria-hidden="true">
+    <div class="tape-track">
+      <p><span>Measure once</span><i>✦</i><span>Fits every brand</span><i>✦</i><span>Zero guessing</span><i>✦</i><span>Fewer returns</span><i>✦</i><span>Your size, everywhere</span><i>✦</i></p>
+      <p><span>Measure once</span><i>✦</i><span>Fits every brand</span><i>✦</i><span>Zero guessing</span><i>✦</i><span>Fewer returns</span><i>✦</i><span>Your size, everywhere</span><i>✦</i></p>
+    </div>
+  </div>
+
+  <!-- ============ PROBLEM ============
+       Psychology: make the invisible problem visible. Same label, three outcomes. -->
+  <section class="sec bg-white" id="problem">
+    <div class="wrap">
+      <div class="sec-head center">
+        <span class="sticker lilac rv-pop" style="--rot:rotate(-2deg)">The problem</span>
+        <h2 class="h2 rv" style="--i:1">Same "M".<br />Three <span class="u-line">different</span> shirts.</h2>
+        <p class="lede rv" style="--i:2">Every brand cuts its own way. The letter on the tag tells you almost nothing about how it fits your body.</p>
+      </div>
+      <div class="same">
+        <div class="same-card c-a rv" style="--i:0"><span class="brandname">Brand A</span><span class="m">M</span><span class="spec">Chest 38 in</span><span class="pill">Too tight</span></div>
+        <div class="same-card c-b rv" style="--i:1"><span class="brandname">Brand B</span><span class="m">M</span><span class="spec">Chest 40 in</span><span class="pill">Perfect</span></div>
+        <div class="same-card c-c rv" style="--i:2"><span class="brandname">Brand C</span><span class="m">M</span><span class="spec">Chest 43 in</span><span class="pill">Way too loose</span></div>
+      </div>
+      <div class="loop rv">
+        <div><span class="n">01</span><b>Order</b><small>"M should be fine"</small></div>
+        <div><span class="n">02</span><b>Wait 4 days</b><small>The excitement builds</small></div>
+        <div><span class="n">03</span><b>Doesn't fit</b><small>Of course it doesn't</small></div>
+        <div><span class="n">04</span><b>Return, repeat</b><small>Another pickup, another wait</small></div>
+        <div><span class="n">OR</span><b>Use Snugz</b><small>Right size, first time</small></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ HOW IT WORKS ============ -->
+  <section class="sec bg-lilac tex" id="how">
+    <div class="wrap">
+      <div class="sec-head">
+        <span class="sticker white rv-pop" style="--rot:rotate(-2deg)">How it works</span>
+        <h2 class="h2 rv" style="--i:1">Three steps.<br />That's literally it.</h2>
+      </div>
+      <div class="steps">
+        <article class="step st-1 rv" style="--i:0">
+          <div class="top"><span class="num">1</span><span class="time">20 sec</span></div>
+          <div><h3 class="h3">Create your account</h3><p style="margin-top:10px">Email or Google. Your fit is saved to your account and synced to the extension.</p></div>
+          <svg class="ico"><use href="#i-user"/></svg>
+        </article>
+        <article class="step st-2 rv" style="--i:1">
+          <div class="top"><span class="num">2</span><span class="time">2 min</span></div>
+          <div><h3 class="h3">Add your measurements</h3><p style="margin-top:10px">Shirts: chest, shoulder, sleeve.<br />Jeans: waist and length.</p></div>
+          <svg class="ico"><use href="#i-tape"/></svg>
+        </article>
+        <article class="step st-3 rv" style="--i:2">
+          <div class="top"><span class="num">3</span><span class="time">0 sec</span></div>
+          <div><h3 class="h3">Shop like normal</h3><p style="margin-top:10px">Open any product. Snugz reads its size chart and shows your size right there.</p></div>
+          <svg class="ico"><use href="#i-bag"/></svg>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ FIT BUILDER (interactive) ============
+       Psychology: let people try it before signing up. Answering the first question
+       creates ownership, so they're more likely to finish. -->
+  <section class="sec bg-orange tex" id="fit">
+    <div class="wrap fit-grid">
+      <div>
+        <span class="sticker white rv-pop" style="--rot:rotate(-2deg)">Try it now</span>
+        <h2 class="h2 rv" style="--i:1;margin-top:24px">Building your fit feels like a chat.</h2>
+        <p class="lede rv" style="--i:2;margin-top:24px">Five quick questions. Each one shows you exactly where to put the tape.</p>
+        <ul class="fit-list rv" style="--i:3">
+          <li><span>1</span>Chest</li>
+          <li><span>2</span>Shoulder width</li>
+          <li><span>3</span>Sleeve length</li>
+          <li><span>4</span>Jeans waist</li>
+          <li><span>5</span>Jeans length</li>
+        </ul>
+      </div>
+      <div class="qcard rv" style="--i:1">
+        <div class="q-top"><span class="q-count" id="qCount">Question 1 of 5</span><div class="q-bars" id="qBars"><i class="on"></i><i></i><i></i><i></i><i></i></div></div>
+        <div class="q-body" id="qBody"></div>
+        <div class="picker">
+          <button type="button" id="qMinus" aria-label="Decrease"><svg><use href="#i-minus"/></svg></button>
+          <output id="qVal">40<small>in</small></output>
+          <button type="button" id="qPlus" aria-label="Increase"><svg><use href="#i-plus"/></svg></button>
+        </div>
+        <div class="q-foot">
+          <button class="link-btn" id="qBack" disabled>Back</button>
+          <div class="unit" role="group" aria-label="Units"><button class="on" data-u="in">in</button><button data-u="cm">cm</button></div>
+          <button class="btn btn-violet btn-sm" id="qNext">Next <svg class="arrow"><use href="#i-arrow"/></svg></button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ EXTENSION ============ -->
+  <section class="sec bg-indigo tex light" id="extension">
+    <div class="wrap ext-grid">
+      <div>
+        <span class="sticker rv-pop" style="--rot:rotate(-2deg)">The extension</span>
+        <h2 class="h2 rv" style="--i:1;margin-top:24px">It just pops up.<br />Right there.</h2>
+        <p class="lede rv" style="--i:2;margin-top:24px">Open any shirt or jeans. Snugz reads that product's own size chart, compares it with your fit, and shows your size. No charts to read, no maths.</p>
+        <div class="stores rv" style="--i:3">
+          <span class="store"><i></i>Myntra</span>
+          <span class="store"><i></i>Flipkart</span>
+          <span class="store soon"><i></i>Ajio · soon</span>
+          <span class="store soon"><i></i>Amazon · soon</span>
+        </div>
+        <a href="#" class="btn btn-orange rv chrome" style="--i:4">Add to Chrome, it's free <svg class="arrow"><use href="#i-arrow"/></svg></a>
+      </div>
+      <div class="popwrap rv" style="--i:2">
+        <span class="sticker mint">Live on the page</span>
+        <div class="ext-pop">
+          <div class="hd"><span><img src="assets/snugz-icon-64.png" alt="" />Snugz</span><small>Oxford Shirt</small></div>
+          <div class="big"><b>L</b><p>is your size<br />for this shirt</p></div>
+          <div class="rows">
+            <div>Chest <em>Perfect</em></div>
+            <div>Shoulder <em>Perfect</em></div>
+            <div>Sleeve <em class="warn">0.5 in long</em></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ PRIVACY ============
+       Psychology: body measurements feel personal. Remove the fear before the final ask. -->
+  <section class="sec bg-white">
+    <div class="wrap">
+      <div class="sec-head center">
+        <span class="sticker mint rv-pop" style="--rot:rotate(-2deg)">Private by design</span>
+        <h2 class="h2 rv" style="--i:1">Your body.<br />Your data.</h2>
+      </div>
+      <div class="priv">
+        <div class="priv-card rv" style="--i:0"><span class="ic" style="background:var(--lilac)"><svg><use href="#i-lock"/></svg></span><h3 class="h3" style="font-size:24px">Encrypted</h3><p>Your measurements are encrypted and only used to match sizes for you.</p></div>
+        <div class="priv-card rv" style="--i:1"><span class="ic" style="background:var(--orange)"><svg><use href="#i-ban"/></svg></span><h3 class="h3" style="font-size:24px">Never sold</h3><p>We don't sell or share your data with brands, stores or advertisers.</p></div>
+        <div class="priv-card rv" style="--i:2"><span class="ic" style="background:var(--mint)"><svg><use href="#i-eye"/></svg></span><h3 class="h3" style="font-size:24px">Shops only</h3><p>The extension only runs on supported shopping sites, nowhere else.</p></div>
+        <div class="priv-card rv" style="--i:3"><span class="ic" style="background:var(--coral);color:#fff"><svg><use href="#i-trash"/></svg></span><h3 class="h3" style="font-size:24px">Delete anytime</h3><p>One tap removes your account and every measurement, permanently.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ FAQ ============ -->
+  <section class="sec bg-lilac tex" id="faq">
+    <div class="wrap faq-grid">
+      <div class="faq-side">
+        <span class="sticker white rv-pop" style="--rot:rotate(-2deg);justify-self:start">FAQ</span>
+        <h2 class="h2 rv" style="--i:1">Questions?<br />Sorted.</h2>
+        <p class="lede rv" style="--i:2;color:#3D3570">Everything you need to know before you measure up.</p>
+        <div class="help-card rv" style="--i:3">
+          <span class="av"><svg><use href="#i-chat"/></svg></span>
+          <div><b>Still curious?</b><span class="small">We reply within a day. <a href="mailto:hello@snugz.in">hello@snugz.in</a></span></div>
+        </div>
+      </div>
+      <div class="faq" id="faqList">
+        <div class="faq-item rv" style="--i:0"><button class="faq-q" aria-expanded="false">Is Snugz really free?<span class="pm"><svg><use href="#i-plus"/></svg></span></button><div class="faq-a"><div><p>Yes. Creating your fit profile and using the extension is free.</p></div></div></div>
+        <div class="faq-item rv" style="--i:1"><button class="faq-q" aria-expanded="false">How does Snugz know my size for a brand?<span class="pm"><svg><use href="#i-plus"/></svg></span></button><div class="faq-a"><div><p>We don't guess from a database. The extension reads the size chart of the exact product you're viewing and compares it with your measurements.</p></div></div></div>
+        <div class="faq-item rv" style="--i:2"><button class="faq-q" aria-expanded="false">What do I need to measure?<span class="pm"><svg><use href="#i-plus"/></svg></span></button><div class="faq-a"><div><p>For shirts and tops: chest, shoulder width and sleeve length. For jeans: waist and length. A soft measuring tape is all you need, and every step shows you where to measure.</p></div></div></div>
+        <div class="faq-item rv" style="--i:3"><button class="faq-q" aria-expanded="false">I don't have a measuring tape. What now?<span class="pm"><svg><use href="#i-plus"/></svg></span></button><div class="faq-a"><div><p>Take a shirt and jeans that fit you well, lay them flat and measure those with any ruler or string. You can update your numbers any time.</p></div></div></div>
+        <div class="faq-item rv" style="--i:4"><button class="faq-q" aria-expanded="false">Which websites does it work on?<span class="pm"><svg><use href="#i-plus"/></svg></span></button><div class="faq-a"><div><p>We're starting with Myntra and Flipkart. Ajio and Amazon are next.</p></div></div></div>
+        <div class="faq-item rv" style="--i:5"><button class="faq-q" aria-expanded="false">Does it work on my phone?<span class="pm"><svg><use href="#i-plus"/></svg></span></button><div class="faq-a"><div><p>The extension works in Chrome on laptops and desktops. A mobile app is on the way. Join the newsletter below and we'll tell you first.</p></div></div></div>
+        <div class="faq-item rv" style="--i:6"><button class="faq-q" aria-expanded="false">Is my body data safe?<span class="pm"><svg><use href="#i-plus"/></svg></span></button><div class="faq-a"><div><p>Your measurements are encrypted, never sold, and only used to match sizes for you. You can delete your account and all your data in one tap.</p></div></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ FINAL CTA ============ -->
+  <section class="final tex" style="position:relative">
+    <span class="sticker white float-s fs1">Measure once</span>
+    <span class="sticker float-s fs2">Fits every brand</span>
+    <span class="sticker lilac float-s fs3">Fewer returns</span>
+    <span class="sticker mint float-s fs4">100% free</span>
+    <div class="wrap">
+      <h2 class="display pop-words" aria-label="Stop guessing. Start fitting."><span class="w" style="--d:0" aria-hidden="true">Stop</span> <span class="w" style="--d:1" aria-hidden="true">guessing.</span><br /><span class="w" style="--d:2" aria-hidden="true">Start</span> <span class="w" style="--d:3" aria-hidden="true">fitting.</span></h2>
+      <p class="lede rv" style="--i:1">Two minutes now saves every return later.</p>
+      <a href="onboarding.html" class="btn btn-ink rv go" style="--i:2">Create my free account <svg class="arrow"><use href="#i-arrow"/></svg></a>
+    </div>
+  </section>
+</main>
+
+<!-- ============ FOOTER ============ -->
+<footer class="footer">
+  <div class="wrap">
+    <div class="f-top">
+      <div class="f-brand">
+        <a href="#top" class="brand"><img src="assets/snugz-icon-64.png" alt="" width="40" height="40" />snugz</a>
+        <p>Your size, every brand, every time. Made for shoppers who are done with returns.</p>
+        <form class="news" id="news">
+          <label class="sr-only" for="newsEmail">Email</label>
+          <input id="newsEmail" type="email" required placeholder="Get the mobile app first" />
+          <button class="btn btn-orange" type="submit">Join</button>
+        </form>
+      </div>
+      <div class="f-col"><h4>Product</h4><a href="#how">How it works</a><a href="#fit">Fit profile</a><a href="#extension">Chrome extension</a><a href="#faq">FAQ</a></div>
+      <div class="f-col"><h4>Company</h4><a href="#">About</a><a href="#">Careers</a><a href="mailto:hello@snugz.in">Contact</a><a href="#">Press kit</a></div>
+      <div class="f-col"><h4>Legal</h4><a href="#">Privacy policy</a><a href="#">Terms of use</a><a href="#">Data &amp; consent</a><a href="#">Cookies</a></div>
+    </div>
+    <div class="f-bot">
+      <span>© 2026 Snugz. Made in India.</span>
+      <div class="socials">
+        <a href="#" aria-label="Instagram"><svg><use href="#i-insta"/></svg></a>
+        <a href="#" aria-label="X"><svg><use href="#i-x"/></svg></a>
+        <a href="#" aria-label="LinkedIn"><svg><use href="#i-in"/></svg></a>
+        <a href="#" aria-label="YouTube"><svg><use href="#i-yt"/></svg></a>
+      </div>
+    </div>
+    <div class="wordmark" id="wordmark" aria-hidden="true"><span style="--n:0">s</span><span style="--n:1">n</span><span style="--n:2">u</span><span style="--n:3">g</span><span style="--n:4">z</span></div>
+  </div>
+</footer>
+
+<div class="wipe" id="wipe"><img src="assets/snugz-icon-512.png" alt="" /></div>
+<script src="js/main.js"></script>
+</body>
+</html>

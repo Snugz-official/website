@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en" data-snugz-test>
+<head>
+<meta charset="UTF-8" />
+<title>Men Relaxed Oxford Shirt · Test Store</title>
+<link rel="stylesheet" href="../content.css" />
+<style>
+  body { font-family: system-ui, sans-serif; margin: 40px; color: #222; }
+  .size-buttons { display: flex; gap: 10px; margin: 16px 0; }
+  .size-buttons button { width: 56px; height: 56px; border-radius: 50%; border: 1px solid #ccc; background: #fff; font-weight: 700; }
+  table { border-collapse: collapse; margin-top: 12px; } td, th { border: 1px solid #ddd; padding: 6px 12px; }
+  .modal { display: none; border: 1px solid #ccc; padding: 16px; width: 520px; }
+  .modal.open { display: block; }
+</style>
+</head>
+<body>
+  <!-- Test fixture only: a fake product page to check the Snugz size-chart reader.
+       Open via a local server; the page sets a test profile instead of chrome.storage. -->
+  <nav class="breadcrumb">Home / Men / Shirts</nav>
+  <h1>Men Relaxed Fit Oxford Shirt</h1>
+  <p>₹1,299</p>
+  <div class="size-buttons"><button>S</button><button>M</button><button>L</button><button>XL</button><button>XXL</button></div>
+  <button id="openChart">Size Chart</button>
+  <div class="modal" id="chart">
+    <h3>Size Chart · Body measurements</h3>
+    <table>
+      <thead><tr><th>Size</th><th>Chest (in)</th><th>Across Shoulder (in)</th><th>Sleeve Length (in)</th><th>Front Length (in)</th></tr></thead>
+      <tbody>
+        <tr><td>S</td><td>36-38</td><td>16.5</td><td>24</td><td>28</td></tr>
+        <tr><td>M</td><td>38-40</td><td>17.0</td><td>24.5</td><td>29</td></tr>
+        <tr><td>L</td><td>40-42</td><td>17.75</td><td>25</td><td>30</td></tr>
+        <tr><td>XL</td><td>42-44</td><td>18.5</td><td>25.5</td><td>31</td></tr>
+        <tr><td>XXL</td><td>44-46</td><td>19.25</td><td>26</td><td>32</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <script>
+    window.__snugzTest = { session: { user: { id: "test" } }, profile: { name: "Test", chest: 40.5, shoulder: 17.5, sleeve: 25, waist: 32, length: 31, top_fit: "Regular", jeans_fit: "Regular" } };
+    // #nochart: start without the size chart in the page; clicking "Size Chart" adds it (like real sites)
+    const table = document.querySelector("#chart table");
+    if (location.hash === "#nochart") table.remove();
+    document.getElementById("openChart").onclick = () => {
+      const m = document.getElementById("chart");
+      if (!m.querySelector("table")) m.appendChild(table);
+      m.classList.add("open");
+    };
+  </script>
+  <script src="../config.js"></script>
+  <script src="../match.js"></script>
+  <script src="../content.js"></script>
+</body>
+</html>
