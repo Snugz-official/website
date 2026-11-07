@@ -139,7 +139,28 @@ $("#accForm").addEventListener("submit", async (e) => {
     accMsg(err.message);
   } finally { busy(false); }
 });
-$("#googleBtn").addEventListener("click", () => accMsg("Google sign-in is coming soon. Please use email for now."));
+// Google: send the user to Google via Supabase; they come back to this page with tokens in the #hash
+$("#googleBtn").addEventListener("click", () => {
+  location.href = SnugzAPI.googleURL(location.origin + location.pathname);
+});
+(async function handleGoogleReturn() {
+  if (!/access_token|error_description/.test(location.hash)) return;
+  try {
+    const s = await SnugzAPI.sessionFromURL(location.href);
+    history.replaceState(null, "", location.pathname + location.search);   // remove tokens from the address bar
+    if (!s) return;
+    saveSession(s);
+    const meta = s.user.user_metadata || {};
+    profile.name = (meta.full_name || meta.name || "").split(/\s+/)[0];
+    $("#hiName").textContent = profile.name || "there";
+    const saved = await SnugzAPI.getProfile(s);
+    if (saved) { loadSaved(saved); finish(false); }     // returning user → straight to their fit
+    else show(1);                                        // new user → style step
+  } catch (err) {
+    history.replaceState(null, "", location.pathname + location.search);
+    accMsg(err.message);
+  }
+})();
 
 // map between the database row and this page's profile object
 function toRow() {

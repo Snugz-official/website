@@ -64,6 +64,22 @@
     async signOut(session) {
       try { await call("/auth/v1/logout", { method: "POST", token: session.access_token }); } catch (_) { /* already gone */ }
     },
+    // ---- Google sign-in (Supabase OAuth, tokens come back in the URL #hash) ----
+    googleURL(redirectTo) {
+      return `${base()}/auth/v1/authorize?provider=google&redirect_to=${encodeURIComponent(redirectTo)}`;
+    },
+    // read tokens from a URL like ...#access_token=...&refresh_token=...; returns a session or null
+    async sessionFromURL(url) {
+      const hash = new URL(url).hash.replace(/^#/, "");
+      const p = new URLSearchParams(hash);
+      if (p.get("error_description")) throw new Error(p.get("error_description").replace(/\+/g, " "));
+      if (!p.get("access_token")) return null;
+      const user = await call("/auth/v1/user", { token: p.get("access_token") });
+      return normalize({
+        access_token: p.get("access_token"), refresh_token: p.get("refresh_token"),
+        expires_in: +p.get("expires_in") || 3600, user,
+      });
+    },
     async getProfile(session) {
       const rows = await call(`/rest/v1/fit_profiles?select=*&user_id=eq.${session.user.id}`, { token: session.access_token });
       return rows && rows[0] ? rows[0] : null;
