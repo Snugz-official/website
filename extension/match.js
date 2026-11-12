@@ -40,13 +40,13 @@
 
   /**
    * chart = { kind: "top"|"bottom", unit: "in"|"cm", type: "body"|"garment",
+   *           types: { waist: "body", length: "garment" }   (optional, per measurement)
    *           rows: [{ size: "L", chest: "40-42", shoulder: "17.5", ... }] }
    * profile = { chest, shoulder, sleeve, waist, length, top_fit, jeans_fit } in inches
    */
   function bestSize(chart, profile) {
     const w = WEIGHTS[chart.kind];
     const pref = chart.kind === "top" ? profile.top_fit || "Regular" : profile.jeans_fit || "Regular";
-    const ease = EASE[chart.type || "body"][pref] || 0;
     const toIn = chart.unit === "cm" ? 1 / 2.54 : 1;
 
     const scored = chart.rows.map((row) => {
@@ -57,7 +57,11 @@
         const r = parseRange(row[key]);
         if (!r) continue;
         const range = [r[0] * toIn, r[1] * toIn];
+        // a short sleeve (under ~15 in) is the sleeve itself, not arm length: don't compare it
+        if (key === "sleeve" && range[1] < 15) continue;
         // only circumference measurements get fit ease; lengths are matched as they are
+        const type = (chart.types && chart.types[key]) || chart.type || "body";
+        const ease = (EASE[type] || EASE.body)[pref] || 0;
         const target = +profile[key] + (key === "chest" || key === "waist" ? ease : 0);
         const d = diff(range, target);
         // too tight is worse than a little loose, so tight gaps cost 15% more (breaks ties toward the bigger size)

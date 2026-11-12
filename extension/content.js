@@ -24,8 +24,14 @@
   function productKind() {
     const text = [document.title, ...[...document.querySelectorAll("h1, h2, nav, [class*='breadcrumb']")].slice(0, 12).map((e) => e.textContent)]
       .join(" ").toLowerCase();
-    if (/\b(jeans|trousers?|pants|chinos|joggers|track ?pants|shorts|leggings|jeggings)\b/.test(text)) return "bottom";
-    if (/\b(shirts?|t-?shirts?|tees?|tops?|polos?|kurtas?|kurtis?|sweatshirts?|hoodies?|jackets?|blazers?|sweaters?|tunics?)\b/.test(text)) return "top";
+    // the garment word nearest the end decides: "Pepe Jeans Men Polo T-Shirt" is a top
+    const BOTTOM = /\b(jeans|trousers?|pants|chinos|joggers|track ?pants|shorts|leggings|jeggings)\b/;
+    const TOP = /\b(shirts?|t-?shirts?|tees?|tops?|polos?|kurtas?|kurtis?|sweatshirts?|hoodies?|jackets?|blazers?|sweaters?|tunics?)\b/;
+    for (const t of [document.title.toLowerCase(), text]) {
+      let last = null;
+      for (const m of t.matchAll(new RegExp(`${BOTTOM.source}|${TOP.source}`, "g"))) last = m[0];
+      if (last) return BOTTOM.test(last) ? "bottom" : "top";
+    }
     return null;
   }
 
@@ -87,6 +93,95 @@
     return null;
   }
 
+  /* ---------- automatic charts: read the store's own size data, no click needed ---------- */
+  // Measurement names used by the stores → our keys
+  function keyFor(name, kind) {
+    const n = name.toLowerCase();
+    if (/\b(chest|bust)\b/.test(n)) return "chest";
+    if (/shoulder/.test(n)) return "shoulder";
+    if (/sleeve/.test(n)) return "sleeve";
+    if (/waist/.test(n)) return "waist";
+    if (kind === "bottom" && /inseam|inside leg/.test(n)) return "length";
+    return null;
+  }
+  const unitOf = (u) => (/cm|centi/i.test(u || "") ? "cm" : "in");
+
+  // Myntra: every product page carries window.__myx with each size's measurements.
+  // Content scripts can't see page variables, so read it from the page's <script> text
+  // (or re-download the page if Myntra switched products without reloading).
+  async function myntraChart(kind) {
+    const id = (location.pathname.match(/\/(\d+)\/buy/) || [])[1];
+    if (!id) return null;
+    const parse = (text) => {
+      const i = text.indexOf("window.__myx");
+      if (i < 0) return null;
+      const start = text.indexOf("{", i);
+      const end = text.indexOf("</script>", start);
+      try { return JSON.parse(text.slice(start, end < 0 ? undefined : end).trim().replace(/;\s*$/, "")); } catch (_) { return null; }
+    };
+    let myx = null;
+    for (const s of document.scripts) if (!s.src && s.textContent.includes("window.__myx")) { myx = parse(s.textContent); if (myx) break; }
+    if (!myx || !myx.pdpData || String(myx.pdpData.id) !== id) {
+      try { myx = parse(await (await fetch(location.href, { credentials: "include" })).text()); } catch (_) { return null; }
+    }
+    const sizes = myx && myx.pdpData && myx.pdpData.sizes;
+    if (!sizes || !sizes.length) return null;
+    const types = {};
+    let unit = "in";
+    const rows = sizes.map((s) => {
+      const row = { size: s.label };
+      for (const m of s.measurements || []) {
+        const k = keyFor(m.name, kind);
+        if (!k || row[k] != null) continue;
+        row[k] = m.minValue && m.maxValue && m.minValue !== m.maxValue ? `${m.minValue}-${m.maxValue}` : m.value;
+        types[k] = /body/i.test(m.type || m.measurementType) ? "body" : "garment";
+        unit = unitOf(m.unit);
+      }
+      return row;
+    }).filter((r) => Object.keys(r).length > 1);
+    return rows.length >= 2 ? { kind, unit, type: "body", types, rows, source: "auto" } : null;
+  }
+
+  // Flipkart: the size chart comes from Flipkart's own size-chart service for this product id.
+  async function flipkartChart(kind) {
+    const canon = (document.querySelector("link[rel='canonical']") || {}).href || "";
+    const pid = new URLSearchParams(location.search).get("pid") || (canon.match(/[?&]pid=([A-Z0-9]+)/) || [])[1];
+    if (!pid) return null;
+    try {
+      const res = await fetch("https://2.rome.api.flipkart.com/3/product/size-chart", {
+        method: "POST", credentials: "include",
+        headers: { "Content-Type": "application/json", "X-User-Agent": navigator.userAgent + " FKUA/website/42/website/Desktop" },
+        body: JSON.stringify({ pids: [pid] }),
+      });
+      const info = (((await res.json()).RESPONSE || {}).data || {})[pid];
+      const sc = info && info.sizeChartInfo;
+      if (!sc || !sc.headers || !sc.rows) return null;
+      const byId = {}; let unit = "in"; let sizeId = null;
+      for (const h of sc.headers) {
+        if (sizeId == null && /^size$/i.test(h.headerName.trim())) sizeId = h.headerId;
+        const k = keyFor(h.headerName, kind);
+        if (k && !Object.values(byId).includes(k)) { byId[h.headerId] = k; if (h.qualifier) unit = unitOf(h.qualifier); }
+      }
+      if (sizeId == null) sizeId = sc.headers[0].headerId;
+      const rows = sc.rows.map((r) => {
+        const row = {};
+        for (const c of r.cells) { if (c.headerId === sizeId) row.size = c.value; else if (byId[c.headerId]) row[byId[c.headerId]] = c.value; }
+        return row;
+      }).filter((r) => r.size && Object.keys(r).length > 1);
+      return rows.length >= 2 ? { kind, unit, type: "body", rows, source: "auto" } : null;
+    } catch (_) { return null; }
+  }
+
+  const autoCache = {};
+  async function autoChart(kind) {
+    const key = location.pathname + location.search + kind;
+    if (!(key in autoCache)) {
+      autoCache[key] = location.hostname.includes("myntra.com") ? myntraChart(kind)
+        : location.hostname.includes("flipkart.com") ? flipkartChart(kind) : Promise.resolve(null);
+    }
+    return autoCache[key];
+  }
+
   /* ---------- highlight the matching size button ---------- */
   function highlightSize(size) {
     document.querySelectorAll(".snugz-hit").forEach((e) => e.classList.remove("snugz-hit"));
@@ -143,7 +238,7 @@
       c.innerHTML = head() + `
         <div class="snugz-big"><b>${r.size}</b><p>is your size<br>for this ${data.kind === "bottom" ? "pair" : "piece"}</p></div>
         <div class="snugz-rows">${r.parts.map((p) => `<div><span>${p.label}</span><em class="${p.tone}">${p.word}</em></div>`).join("")}</div>
-        <div class="snugz-foot">${r.confidence}% match · ${r.pref} fit · read from this page's size chart</div>`;
+        <div class="snugz-foot">${r.confidence}% match · ${r.pref} fit · from this product's size chart</div>`;
       highlightSize(r.size);
     }
     c.dataset.state = state;
@@ -158,7 +253,8 @@
     const { session, profile } = await store.get();
     if (!session && !profile) return render("setup");
     if (!profile) return render("noprofile");
-    const chart = findChart(kind);
+    // 1) the store's own size data (works the moment the page opens), 2) a size chart table if one is open
+    const chart = (await autoChart(kind)) || findChart(kind);
     if (!chart) { if (!card || card.dataset.state !== "result") render("waiting"); return; }
     const key = JSON.stringify(chart.rows) + JSON.stringify(profile);
     if (key === lastKey) return;
