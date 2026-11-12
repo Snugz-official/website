@@ -142,45 +142,93 @@
     return rows.length >= 2 ? { kind, unit, type: "body", types, rows, source: "auto" } : null;
   }
 
+  // Flipkart product id: from the link (?pid=), else the canonical/og link, else the id the page itself
+  // uses most often (links without ?pid= open the default variant, whose id fills the page).
+  function flipkartPid() {
+    const fromUrl = new URLSearchParams(location.search).get("pid");
+    if (fromUrl) return fromUrl;
+    for (const sel of ["link[rel='canonical']", "meta[property='og:url']"]) {
+      const el = document.querySelector(sel);
+      const m = ((el && (el.href || el.content)) || "").match(/[?&]pid=([A-Z0-9]{8,20})/);
+      if (m) return m[1];
+    }
+    const count = {};
+    for (const m of document.documentElement.innerHTML.matchAll(/pid(?:=|%3D|\\?":\\?")([A-Z0-9]{16})/g)) count[m[1]] = (count[m[1]] || 0) + 1;
+    const best = Object.entries(count).sort((a, b) => b[1] - a[1])[0];
+    return best ? best[0] : null;
+  }
+  // ask the background worker (no page security rules there); fall back to fetching from the page
+  function askBackground(msg) {
+    return new Promise((resolve) => {
+      try {
+        if (!globalThis.chrome || !chrome.runtime || !chrome.runtime.sendMessage) return resolve(null);
+        chrome.runtime.sendMessage(msg, (reply) => resolve(chrome.runtime.lastError ? null : reply));
+      } catch (_) { resolve(null); }
+    });
+  }
+
   // Flipkart: the size chart comes from Flipkart's own size-chart service for this product id.
   async function flipkartChart(kind) {
-    const canon = (document.querySelector("link[rel='canonical']") || {}).href || "";
-    const pid = new URLSearchParams(location.search).get("pid") || (canon.match(/[?&]pid=([A-Z0-9]+)/) || [])[1];
+    // After switching products without a reload, the old product's content can linger for a moment.
+    // If the id isn't in the link, wait until the page title has changed to the new product.
+    if (!new URLSearchParams(location.search).get("pid") && staleTitle()) return "wait";
+    const pid = flipkartPid();
     if (!pid) return null;
     try {
-      const res = await fetch("https://2.rome.api.flipkart.com/3/product/size-chart", {
-        method: "POST", credentials: "include",
-        headers: { "Content-Type": "application/json", "X-User-Agent": navigator.userAgent + " FKUA/website/42/website/Desktop" },
-        body: JSON.stringify({ pids: [pid] }),
-      });
-      const info = (((await res.json()).RESPONSE || {}).data || {})[pid];
+      // main path: ask from the page, exactly like Flipkart's own "Size Chart" button does
+      let info = null;
+      try {
+        const res = await fetch("https://2.rome.api.flipkart.com/3/product/size-chart", {
+          method: "POST", credentials: "include",
+          headers: { "Content-Type": "application/json", "X-User-Agent": navigator.userAgent + " FKUA/website/42/website/Desktop" },
+          body: JSON.stringify({ pids: [pid] }),
+        });
+        info = (((await res.json()).RESPONSE || {}).data || {})[pid];
+      } catch (_) { /* network hiccup or page rules: try the backup below */ }
+      // backup: the extension's background worker
+      if (!info || !info.sizeChartInfo) {
+        const bg = await askBackground({ type: "flipkart-size-chart", pid });
+        if (bg && bg.sizeChartInfo) info = bg;
+      }
       const sc = info && info.sizeChartInfo;
       if (!sc || !sc.headers || !sc.rows) return null;
-      const byId = {}; let unit = "in"; let sizeId = null;
+      const byId = {}; let unit = "in"; let sizeId = null, brandId = null;
       for (const h of sc.headers) {
         if (sizeId == null && /^size$/i.test(h.headerName.trim())) sizeId = h.headerId;
+        if (brandId == null && /brand\s*size/i.test(h.headerName)) brandId = h.headerId;
         const k = keyFor(h.headerName, kind);
         if (k && !Object.values(byId).includes(k)) { byId[h.headerId] = k; if (h.qualifier) unit = unitOf(h.qualifier); }
       }
       if (sizeId == null) sizeId = sc.headers[0].headerId;
       const rows = sc.rows.map((r) => {
         const row = {};
-        for (const c of r.cells) { if (c.headerId === sizeId) row.size = c.value; else if (byId[c.headerId]) row[byId[c.headerId]] = c.value; }
+        for (const c of r.cells) {
+          if (c.headerId === sizeId) row.size = c.value;
+          else if (c.headerId === brandId) row.alt = c.value;           // e.g. Size "38" ↔ Brand Size "S"
+          else if (byId[c.headerId]) row[byId[c.headerId]] = c.value;
+        }
         return row;
       }).filter((r) => r.size && Object.keys(r).length > 1);
       return rows.length >= 2 ? { kind, unit, type: "body", rows, source: "auto" } : null;
     } catch (_) { return null; }
   }
 
-  const autoCache = {};
+  // Successful charts are cached per product page. Failures are NOT cached: the next check
+  // (page still loading, slow network) simply tries again, up to a few times.
+  const autoCache = {}, autoTries = {};
+  const MAX_TRIES = 6;
   async function autoChart(kind) {
     const key = location.pathname + location.search + kind;
-    if (!(key in autoCache)) {
-      autoCache[key] = location.hostname.includes("myntra.com") ? myntraChart(kind)
-        : location.hostname.includes("flipkart.com") ? flipkartChart(kind) : Promise.resolve(null);
-    }
-    return autoCache[key];
+    if (autoCache[key]) return autoCache[key];
+    if ((autoTries[key] || 0) >= MAX_TRIES) return null;
+    autoTries[key] = (autoTries[key] || 0) + 1;
+    const chart = location.hostname.includes("myntra.com") ? await myntraChart(kind)
+      : location.hostname.includes("flipkart.com") ? await flipkartChart(kind) : null;
+    if (chart === "wait") { autoTries[key]--; return null; }   // page still switching: doesn't count as a try
+    if (chart) autoCache[key] = chart;
+    return chart;
   }
+  const autoGaveUp = (kind) => (autoTries[location.pathname + location.search + kind] || 0) >= MAX_TRIES;
 
   /* ---------- highlight the matching size button ---------- */
   function highlightSize(size) {
@@ -203,7 +251,9 @@
       let chip = el;
       while (chip.parentElement && cellText(chip.parentElement).toUpperCase() === want && chip.parentElement.getBoundingClientRect().width < 140) chip = chip.parentElement;
       chip.classList.add("snugz-hit");
+      return true;
     }
+    return false;
   }
 
   /* ---------- the card ---------- */
@@ -220,54 +270,115 @@
     });
     return card;
   }
-  const head = () => `<div class="snugz-hd"><span><img src="${iconURL()}" alt="">Snugz</span><button data-snugz-close aria-label="Minimise">–</button></div>`;
+  const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+  // when minimised, the bubble still shows the size (data-size)
+  const head = (size) => `<div class="snugz-hd"><span${size ? ` data-size="${esc(size)}"` : ""}><img src="${iconURL()}" alt="">Snugz</span><button data-snugz-close aria-label="Minimise">–</button></div>`;
 
+  const pageKey = () => location.pathname + location.search;
+  // remember each product page's title so we can tell when an in-place product switch has finished
+  let prevPage = { key: null, title: null }, curPage = { key: pageKey(), title: document.title };
+  function notePage() {
+    if (curPage.key !== pageKey()) { prevPage = curPage; curPage = { key: pageKey(), title: document.title, at: Date.now() }; }
+    else curPage.title = document.title;
+  }
+  // stale = we just switched products, the title still shows the old one, and it's been under 8 s
+  const staleTitle = () => prevPage.key !== null && document.title === prevPage.title && Date.now() - (curPage.at || 0) < 8000;
   function render(state, data = {}) {
     const c = ensureCard();
+    // same message for the same product: don't rewrite it (that would flicker and re-trigger checks)
+    if (state !== "result" && c.dataset.state === state && c.dataset.page === pageKey()) return;
+    c.dataset.page = pageKey();
     const site = (globalThis.SNUGZ_CONFIG && SNUGZ_CONFIG.WEBSITE_URL) || "https://snugz.in";
     if (state === "setup") {
       c.innerHTML = head() + `<p class="snugz-msg">Log in to Snugz (click the Snugz icon in your toolbar) to see your size here.</p>`;
     } else if (state === "noprofile") {
       c.innerHTML = head() + `<p class="snugz-msg">Add your measurements once and Snugz will pick your size.</p><a class="snugz-btn" href="${site}/onboarding.html" target="_blank" rel="noopener">Create my fit profile</a>`;
-    } else if (state === "waiting") {
-      c.innerHTML = head() + `<p class="snugz-msg"><b>Open the size chart</b> on this page and Snugz will match it to your fit.</p>`;
+    } else if (state === "finding") {
+      c.innerHTML = head() + `<p class="snugz-msg"><span class="snugz-spin"></span>Finding your size…</p>`;
+    } else if (state === "nochart") {
+      c.innerHTML = head() + `<p class="snugz-msg">This product doesn't list size measurements, so Snugz can't size it. Most products on this store do.</p>`;
     } else if (state === "nomatch") {
       c.innerHTML = head() + `<p class="snugz-msg">This size chart doesn't have the measurements Snugz needs. Check the brand's chart manually for this one.</p>`;
     } else if (state === "result") {
       const r = data.result;
-      c.innerHTML = head() + `
-        <div class="snugz-big"><b>${r.size}</b><p>is your size<br>for this ${data.kind === "bottom" ? "pair" : "piece"}</p></div>
-        <div class="snugz-rows">${r.parts.map((p) => `<div><span>${p.label}</span><em class="${p.tone}">${p.word}</em></div>`).join("")}</div>
+      c.innerHTML = head(r.size) + `
+        <div class="snugz-big"><b class="${String(r.size).length > 3 ? "snugz-long" : ""}">${esc(r.size)}</b><p>is your size<br>for this ${data.kind === "bottom" ? "pair" : "piece"}</p></div>
+        <div class="snugz-rows">${r.parts.map((p) => `<div><span>${esc(p.label)}</span><em class="${p.tone}">${esc(p.word)}</em></div>`).join("")}</div>
         <div class="snugz-foot">${r.confidence}% match · ${r.pref} fit · from this product's size chart</div>`;
-      highlightSize(r.size);
     }
     c.dataset.state = state;
   }
 
   /* ---------- main ---------- */
-  let lastKey = "";
+  let lastKey = "", retryT, running = false, again = false;
   async function run() {
+    // never run two checks at once (page changes fire often); queue one more instead
+    if (running) { again = true; return; }
+    running = true;
+    try { await check(); } finally {
+      running = false;
+      if (again) { again = false; schedule(); }
+    }
+  }
+  async function check() {
+    notePage();
     if (!isProductPage()) { if (card) card.remove(), card = null; return; }
+    // the store moved to another product without reloading: forget the previous product's answer
+    if (card && card.dataset.page !== pageKey()) {
+      lastKey = ""; card.dataset.state = "";
+      document.querySelectorAll(".snugz-hit").forEach((e) => e.classList.remove("snugz-hit"));
+    }
     const kind = productKind();
-    if (!kind) return;                                  // not clothing we can size yet
+    if (!kind) { if (card) card.remove(), card = null; return; }   // not clothing we can size yet
     const { session, profile } = await store.get();
     if (!session && !profile) return render("setup");
     if (!profile) return render("noprofile");
     // 1) the store's own size data (works the moment the page opens), 2) a size chart table if one is open
     const chart = (await autoChart(kind)) || findChart(kind);
-    if (!chart) { if (!card || card.dataset.state !== "result") render("waiting"); return; }
+    if (!chart) {
+      if (card && card.dataset.state === "result") return;
+      if (autoGaveUp(kind)) return render("nochart");
+      render("finding");
+      clearTimeout(retryT); retryT = setTimeout(run, 1200);   // page may still be loading: try again shortly
+      return;
+    }
     const key = JSON.stringify(chart.rows) + JSON.stringify(profile);
-    if (key === lastKey) return;
+    if (key === lastKey) {
+      // size buttons sometimes render after our answer: ring them as soon as they appear
+      if (card && card.dataset.size && !document.querySelector(".snugz-hit")) highlightSize(card.dataset.size);
+      return;
+    }
     lastKey = key;
     const result = SnugzMatch.bestSize(chart, profile);
-    result ? render("result", { result, kind }) : render("nomatch");
+    if (!result) return render("nomatch");
+    // show the size the way this page's buttons write it ("S" vs "38"), and ring that button
+    const row = chart.rows.find((x) => x.size === result.size) || {};
+    // standard Indian shirt sizing, for charts that only list chest numbers while buttons say S/M/L
+    const SHIRT = { 36: "XS", 38: "S", 40: "M", 42: "L", 44: "XL", 46: "XXL", 48: "3XL", 50: "4XL" };
+    let label = result.size;
+    if (!highlightSize(label)) {
+      const conv = kind === "top" ? SHIRT[String(result.size).trim()] : null;
+      if (row.alt && highlightSize(row.alt)) label = row.alt;
+      else if (conv && highlightSize(conv)) label = conv;
+    }
+    render("result", { result: { ...result, size: label }, kind });
+    card.dataset.size = label;
   }
 
   // size charts usually appear in a pop-up after a click, and these sites change pages
   // without reloading, so watch the page and re-check (throttled).
   let t;
   const schedule = () => { clearTimeout(t); t = setTimeout(run, 400); };
-  new MutationObserver(schedule).observe(document.documentElement, { childList: true, subtree: true });
+  new MutationObserver((muts) => {
+    // ignore changes inside our own card, otherwise updating the card would trigger endless checks
+    if (card && muts.every((m) => card.contains(m.target))) return;
+    schedule();
+  }).observe(document.documentElement, { childList: true, subtree: true });
   if (globalThis.chrome && chrome.storage && chrome.storage.onChanged) chrome.storage.onChanged.addListener(() => { lastKey = ""; schedule(); });
+  // in-place product switches change the address without always changing the page right away:
+  // watch the address too, and re-check the moment it changes
+  let lastHref = location.href;
+  setInterval(() => { if (location.href !== lastHref) { lastHref = location.href; schedule(); } }, 300);
+  addEventListener("popstate", schedule);
   run();
 })();
